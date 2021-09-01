@@ -63,3 +63,5 @@ Makefile
 shtool
 shtoolize
 .timestamp
+foo/**
+bar

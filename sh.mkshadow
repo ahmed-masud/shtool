@@ -18,16 +18,27 @@
 ##  USA, or contact Ralf S. Engelschall <rse@engelschall.com>.
 ##
 
+
+
+
 str_tool="mkshadow"
-str_usage="[-v|--verbose] [-t|--trace] [-a|--all] [-X|--exclude pattern [...]] <src-dir> <dst-dir>"
+str_usage="[-v|--verbose] [-t|--trace] [-a|--all] [-e|--exclude regex[,...]] <src-dir> <dst-dir>"
 arg_spec="2="
-opt_spec="v.t.a."
-opt_alias="v:verbose,t:trace,a:all"
+opt_spec="v.t.a.e:"
+opt_alias="v:verbose,t:trace,a:all,e:exclude"
 opt_v=no
 opt_t=no
 opt_a=no
+opt_e="\\.git,\\.history,\\.hg"
 
 . ./sh.common
+
+exclude=""
+#   expand source paths
+for pat in `echo $opt_e | sed -e 's/,/ /g'`; do
+    exclude="$exclude -e '/$pat/d'"
+done
+
 
 #   source and destination directory
 src=`echo "$1" | sed -e 's:/$::' -e 's:^\./\(.\):\1:'`
@@ -85,7 +96,7 @@ if [ ".$opt_a" = .yes ]; then
           sed -e '/^\.$/d' -e 's:^\./::'`
 else
     DIRS=`cd $src; find . -type d -print |\
-          sed -e '/\/CVS/d' -e '/^\.$/d' -e 's:^\./::'`
+          eval "sed -e '/^\\.$/d' -e 's:^\\./::' ${exclude}"`
 fi
 for dir in $DIRS; do
     if [ ".$opt_t" = .yes ]; then
@@ -96,14 +107,9 @@ done
 
 #   fill directory tree with symlinks to files
 if [ ".$opt_a" = .yes ]; then
-    FILES="`cd $src; find . -depth -print |\
-            sed -e 's/^\.\///'`"
+    FILES="`cd $src; find . -depth -print | sed -e 's/^\.\///'`"
 else
-    FILES="`cd $src; find . -depth -print |\
-            sed -e '/\.o$/d' -e '/\.a$/d' -e '/\.so$/d' \
-                -e '/\.cvsignore$/d' -e '/\/CVS/d' \
-                -e '/\/\.#/d' -e '/\.orig$/d' \
-                -e 's/^\.\///'`"
+    FILES=$(cd $src; find . -depth -print | eval "sed -e '/\\.o$/d' -e '/\\.a$/d' -e '/\\.so$/d' ${exclude} -e 's:^\\.\\/::'")
 fi
 for file in $FILES; do
      #  don't use `-type f' above for find because of symlinks
@@ -137,6 +143,8 @@ for file in $FILES; do
      fi
      ln -s $from $to
 done
+
+
 
 shtool_exit 0
 

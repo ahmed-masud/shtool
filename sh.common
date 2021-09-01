@@ -19,6 +19,9 @@
 ##  COMMON UTILITY CODE
 ##
 
+
+
+
 #   commonly used ASCII values
 ASC_TAB="	"
 ASC_NL="
