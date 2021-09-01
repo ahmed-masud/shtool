@@ -1,6 +1,7 @@
 ##
 ##  shtool.pod -- Manual Page for shtool in POD format
 ##  Copyright (c) 1999-2008 Ralf S. Engelschall <rse@engelschall.com>
+##  Copyright (c) 2021 Ahmed Masud <ahmed.masud@saf.ai>
 ##
 ##  This file is part of shtool and free software; you can redistribute
 ##  it and/or modify it under the terms of the GNU General Public
@@ -191,11 +192,18 @@ accumulated master versions of the scripts and in June 1999 it entered
 the status of an official GNU program and this way finally joined the
 group of GNU B<autoconf>, GNU B<automake> and GNU B<libtool>.
 
+
+Ahmed Masud forked shtools to add more capabilities to shgtool-mkshadow.
+
 =head1 AUTHOR
 
  Ralf S. Engelschall
  rse@engelschall.com
  www.engelschall.com
+
+
+ Ahmed Masud
+ ahmed.masud@saf.ai
 
 =cut
 
